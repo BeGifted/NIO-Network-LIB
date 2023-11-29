@@ -25,11 +25,11 @@ int CreateEventfd() {
 EventLoop::EventLoop() 
     :looping_(false)
     ,quit_(false)
-    ,callingPendingFunctors_(false)
     ,threadId_(CurrentThread::tid())
     ,poller_(Poller::newDefaultPoller(this))
     ,wakeupFd_(CreateEventfd())
-    ,wakeupChannel_(new Channel(this, wakeupFd_)) {
+    ,wakeupChannel_(new Channel(this, wakeupFd_))
+    ,callingPendingFunctors_(false) {
     LOG_DEBUG("EventLoop created %p in thread %d", this, threadId_);
     if (t_loopInThisThread) {
         LOG_FATAL("Another EventLoop %p exists in this thread % d", t_loopInThisThread, threadId_);
@@ -100,7 +100,7 @@ void EventLoop::wakeup() {
     uint64_t one = 1;
     ssize_t n = write(wakeupFd_, &one, sizeof one);
     if (n != sizeof one) {
-        LOG_ERROR("EventLoop::wakeup() writes %lu bytes instead of 8", n);
+        LOG_ERROR("EventLoop::wakeup() writes %zd bytes instead of 8", n);
     }
 }
 
@@ -120,7 +120,7 @@ void EventLoop::handleRead() {
     uint64_t one = 1;
     ssize_t n = read(wakeupFd_, &one, sizeof one);
     if (n != sizeof one) {
-        LOG_ERROR("EventLoop::handleRead() read %d bytes instead of 8", n);
+        LOG_ERROR("EventLoop::handleRead() read %zd bytes instead of 8", n);
     }
 }
 

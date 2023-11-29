@@ -32,7 +32,7 @@ public:
     bool hasChannel(Channel* channel);
 
     bool isInLoopThread() const {
-        threadId_ == CurrentThread::tid();
+        return threadId_ == CurrentThread::tid();
     }
 
 private:

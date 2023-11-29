@@ -29,7 +29,7 @@ EpollPoller::~EpollPoller() {
 }
 
 Timestamp EpollPoller::poll(int timeoutMs, ChannelList* activeChannels) {
-    LOG_INFO("func=%s => fd total count: %d", __FUNCTION__, channels_.size());
+    LOG_INFO("func=%s => fd total count: %lu", __FUNCTION__, channels_.size());
     int numEvents = ::epoll_wait(epollfd_, &*events_.begin(), static_cast<int>(events_.size()), timeoutMs);
     int saveErrno = errno;
     Timestamp now(Timestamp::now());
@@ -37,7 +37,7 @@ Timestamp EpollPoller::poll(int timeoutMs, ChannelList* activeChannels) {
     if (numEvents > 0) {
         LOG_INFO("%d events happened", numEvents);
         fillActiveChannels(numEvents, activeChannels);
-        if (numEvents == events_.size()) {
+        if (static_cast<size_t>(numEvents) == events_.size()) {
             events_.resize(events_.size() * 2);
         }
     } else if (numEvents == 0) {
@@ -65,7 +65,6 @@ void EpollPoller::updateChannel(Channel* channel) {
         channel->set_index(kAdded);
         update(EPOLL_CTL_ADD, channel);
     } else {  //channel已经在poller上注册过
-        int fd = channel->fd();
         if (channel->isNoneEvent()) {
             update(EPOLL_CTL_DEL, channel);
             channel->set_index(kDeleted);

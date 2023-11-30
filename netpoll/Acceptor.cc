@@ -12,6 +12,7 @@ static int createNonblocking() {
     if (sockfd < 0) {
         LOG_FATAL("%s:%s:%d listen socket create err:%d", __FILE__, __FUNCTION__, __LINE__, errno);
     }
+    return sockfd;
 }
 
 Acceptor::Acceptor(EventLoop* loop, const InetAddress& listenAddr, bool reuseport)

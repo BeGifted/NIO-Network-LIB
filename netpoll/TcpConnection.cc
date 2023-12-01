@@ -10,6 +10,14 @@
 #include <strings.h>
 #include <unistd.h>
 
+void defaultConnectionCallback(const TcpConnectionPtr& conn) {
+    LOG_INFO("%s -> %s is %s", conn->localAddress().toIpPort().c_str(), conn->peerAddress().toIpPort().c_str(), (conn->connected() ? "UP" : "DOWN"));
+}
+
+void defaultMessageCallback(const TcpConnectionPtr&, Buffer* buf, Timestamp) {
+    buf->retrieveAll();
+}
+
 TcpConnection::TcpConnection(EventLoop* loop, const std::string& nameArg, int sockfd
         , InetAddress& localAddr, const InetAddress& peerAddr) 
     :loop_(CHECK_NOTNULL(loop))

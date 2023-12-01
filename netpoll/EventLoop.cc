@@ -8,10 +8,10 @@
 #include <errno.h>
 
 //防止一个线程创建多个eventloop
-__thread EventLoop* t_loopInThisThread = 0;
+__thread EventLoop* t_loopInThisThread = nullptr;
 
 //定义默认poller io复用接口的超时时间
-const int kPollTimeMs = 10000;
+const int kPollTimeMs = 5000;
 
 //创建wakeupfd_，用来唤醒subreactor处理新来的channel
 int CreateEventfd() {

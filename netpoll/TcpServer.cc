@@ -1,8 +1,6 @@
 #include "TcpServer.h"
 #include "Logger.h"
-#include "EventLoop.h"
 #include "Callbacks.h"
-#include "TcpConnection.h"
 #include <strings.h>
 
 
@@ -14,6 +12,7 @@ TcpServer::TcpServer(EventLoop* loop, const InetAddress& listenAddr, const std::
     ,threadPool_(new EventLoopThreadPool(loop, name_))
     ,connectionCallback_(defaultConnectionCallback)
     ,messageCallback_(defaultMessageCallback)
+    ,started_(0)
     ,nextConnId_(1) {
     //有新用户连接时，执行该cb
     acceptor_->setNewConnectionCallback(std::bind(&TcpServer::newConnection, this, std::placeholders::_1, std::placeholders::_2));

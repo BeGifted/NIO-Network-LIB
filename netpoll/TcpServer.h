@@ -5,6 +5,8 @@
 #include "Acceptor.h"
 #include "Callbacks.h"
 #include "EventLoopThreadPool.h"
+#include "TcpConnection.h"
+#include "EventLoop.h"
 #include <functional>
 #include <string>
 #include <memory>

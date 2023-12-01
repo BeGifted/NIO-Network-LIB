@@ -160,7 +160,7 @@ void TcpConnection::sendInLoop(const void* message, size_t len) {
     ssize_t nwrote = 0;
     size_t remaining = len;
     bool faultError = false;
-    if (state_ == kDisconnected) {
+    if (state_ == kDisconnected) {  //已经shutdown
         LOG_ERROR("disconnected, give up writing");
         return;
     }

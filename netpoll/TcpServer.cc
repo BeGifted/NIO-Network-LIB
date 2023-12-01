@@ -2,15 +2,9 @@
 #include "Logger.h"
 #include "EventLoop.h"
 
-EventLoop* CheckLoopNotNull(EventLoop* loop) {
-    if (loop == nullptr) {
-        LOG_FATAL("%s:%s:%d mainloop is null", __FILE__, __FUNCTION__, __LINE__);
-    }
-    return loop;
-}
 
 TcpServer::TcpServer(EventLoop* loop, const InetAddress& listenAddr, const std::string& nameArg, Option option)
-    :loop_(CheckLoopNotNull(loop))
+    :loop_(CHECK_NOTNULL(loop))
     ,ipPort_(listenAddr.toIpPort())
     ,name_(nameArg)
     ,acceptor_(new Acceptor(loop, listenAddr, option == kReusePort))

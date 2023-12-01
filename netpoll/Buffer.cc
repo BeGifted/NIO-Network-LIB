@@ -2,6 +2,9 @@
 
 #include <errno.h>
 #include <sys/uio.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
 
 //fd上读数据时，tcp数据最终的大小不知道
 ssize_t Buffer::readFd(int fd, int* saveErrno) {
@@ -23,6 +26,14 @@ ssize_t Buffer::readFd(int fd, int* saveErrno) {
     } else {
         writerIndex_ = buffer_.size();
         append(extrabuf, n - writable);
+    }
+    return n;
+}
+
+ssize_t Buffer::writeFd(int fd, int* saveErrno) {
+    ssize_t n = ::write(fd, peek(), readableBytes());
+    if (n < 0) {
+        *saveErrno = errno;
     }
     return n;
 }

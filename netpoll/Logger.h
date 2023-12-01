@@ -3,6 +3,25 @@
 #include <string>
 #include "noncopyable.h"
 
+enum LogLevel {
+    INFO,
+    ERROR,
+    FATAL,
+    DEBUG
+};
+
+class Logger: noncopyable {
+public:
+    static Logger& instance();
+    void setLogLevel(int level);
+    void log(std::string msg);
+private:
+    int logLevel_;
+    Logger(){}
+};
+
+
+
 #define LOG_INFO(logmsgFormat, ...) \
     { \
         Logger& logger = Logger::instance(); \
@@ -44,19 +63,14 @@
 #define LOG_DEBUG(logmsgFormat, ...) 
 #endif
 
-enum LogLevel {
-    INFO,
-    ERROR,
-    FATAL,
-    DEBUG
-};
 
-class Logger: noncopyable {
-public:
-    static Logger& instance();
-    void setLogLevel(int level);
-    void log(std::string msg);
-private:
-    int logLevel_;
-    Logger(){}
-};
+#define CHECK_NOTNULL(val) \
+    CheckNotNull(val)
+
+template <typename T>
+T* CheckNotNull(T* ptr) {
+    if (ptr == NULL) {
+        LOG_FATAL("%s:%s:%d mainloop is null", __FILE__, __FUNCTION__, __LINE__);
+    }
+    return ptr;
+}
